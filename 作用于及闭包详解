@@ -1,0 +1,157 @@
+1、前言
+   作用域在javascript程序员日常使用中有不同的含义，如下所示：
+   a.this绑定的值
+   b.this绑定的值定义的执行上下文
+   c.一个变量的“生命周期”
+   d.变量的值解析方案，或词法绑定。
+
+
+2、全局作用域
+   所有浏览器都支持 window 对象，它表示浏览器窗口，JavaScript 全局对象、函数以及变量均自动成为 window 对象的成员。
+   所以，全局变量是 window 对象的属性，全局函数是 window 对象的方法，甚至 HTML DOM 的 document 也是 window 对象的属性之一。
+   
+   全局变量：是JavaScript里生命周期（一个变量多长时间内保持一定的值）最长的变量，其将跨越整个程序，可以被程序中的任何函数方法访问。
+   在全局下声明的变量都会在window对象下，都在全局作用域中，我们可以通过window对象访问，也可以直接访问
+   
+   在JS中任何位置，没有使用var关键字声明的变量也都是全局变量。
+   function fun() {
+    name = "jeri";
+    alert(name);
+   }
+   console.log(name); // 输出:jeri
+   
+   全局变量存在于整个函数的生命周期中，然而其在全局范围内很容易被篡改，我们在使用全局变量时一定要小心，尽量不要使用全局变量。
+   在函数内部声明变量没有使用var也会产生全局变量，会为我们造成一些混乱，比如变量覆盖等。所以，我们在声明变量的任何时候最好都要带上var。
+   
+   注意：全局变量存在于程序的整个生命周期，但并不是通过其引用我们一定可以访问到全局变量。
+ 
+ 
+3、词法作用域
+   函数在定义它们的作用域里运行，而不是在执行它们的作用域里运行。也就是说词法作用域取决于源码，通过静态分析就能确定，
+   因此词法作用域也叫做静态作用域。with和eval除外，所以只能说JS的作用域机制非常接近词法作用域（Lexical scope）。
+   词法作用域也可以理解为一个变量的可见性，及其文本表述的模拟值。
+   
+   var name = "global";
+   function fun() {
+      var name = "jeri";
+      return name;
+   }
+   console.log(fun()); // 输出:jeri
+   console.log(name); // 输出:global
+   
+   在通常情况下，变量的查询从最近接的绑定上下文开始，向外部逐渐扩展，直到查询到第一个绑定，一旦完成查找就结束搜索。
+   就像上例，先查找离它最近的name="jeri",查询完成后就结束了，将第一个获取的值作为变量的值。
+   
+   
+4、动态作用域
+   不同于词法作用域在定义时确定，动态作用域在执行时确定，其生存周期到代码片段执行为止。动态变量存在于动态作用域中，任何给定的绑定的值，
+   在确定调用其函数之前，都是不可知的。
+   在作用域链中有动态作用域时，this引用也会变得更加复杂，不再指向第一次创建时的上下文，而是由调用者确定，所以在编程过程中一定要注意this引用的变化，及时跟踪this的变动。
+   
+   
+5、函数作用域
+   顾名思义就是在定义函数时候产生的作用域，这个作用域也可以称为局部作用域。和全局作用域相反，函数作用域一般只在函数的代码片段内可访问到，
+   外部不能进行变量访问。在函数内部定义的变量存在于函数作用域中，其生命周期随着函数的执行结束而结束。
+   var name = "global";
+   function fun() {
+      var name = "jeri";
+      console.log(name); // 输出:jeri
+      with ({name:"with"}) {
+          console.log(name); // 输出:with
+      }
+      console.log(name); // 输出:jeri
+   }
+   fun();// 不能访问函数作用域
+   console.log(name); // 输出:global
+   
+   
+6、没有块级作用域
+   不同于其他编程语言，在JavaScript里并没有块级作用域，也就是说在for、if、while等语句内部的声明的变量与在外部声明是一样的，
+   在这些语句外部也可以访问和修改这些变量的值。
+   function fun() {
+      if(0 < 2) {
+          var name = "jeri";
+      }    
+   console.log(name); // 输出:jeri
+   name = "change";
+   console.log(name); // 输出:change
+  }
+  fun();
+  
+  
+7、作用域链
+   JavaScript里一切皆为对象，包括函数。
+   函数对象的一个内部属性就是作用域，包含了函数被创建的作用域中对象的集合，称为函数的作用域链，它用来保证对执行环节有权访问的变量和函数的有序访问。
+   当一个函数创建后，它的作用域链会被创建此函数的作用域中可访问的数据对象填充。在全局作用域中创建的函数，其作用域链会自动成为全局作用域中的一员。
+   而当函数执行时，其活动对象就会成为作用域链中的第一个对象（活动对象：对象包含了函数的所有局部变量、命名参数、参数集合以及this）。
+   当函数执行结束，运行期上下文被销毁，活动对象也随之销毁。
+   
+   
+8、闭包
+   闭包的官方定义为：一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。
+   一句话概括就是：闭包就是一个函数，捕获作用域内的外部绑定。这些绑定是为之后使用而被绑定，即使作用域已经销毁。
+   
+   自由变量：
+   自由变量与闭包的关系是：自由变量闭合与闭包的创建。闭包背后的逻辑是，如果一个函数内部有其他函数，那么这些内部函数可以访问在这个外部函数中声明的变量，
+                         这些变量就称为“自由变量”。然而这些变量可以被内部函数捕获，从高阶函数（返回另一个函数的函数称为高阶函数）中return语句
+                         实现“越狱”，以供以后使用。内部函数在没有任何局部声明之前（既不是被传入，也不是局部声明）使用的变量就是被捕获的变量。如下：
+   function makeAdder(captured) {
+     return function(free) {
+        var ret = free + captured;
+        console.log(ret);
+     }
+   }
+   var add10 = makeAdder(10);
+   add10(2); // 输出:12
+   每一个新的加法器函数都保留了自己创建时捕获的captured实例。
+   
+   变量遮蔽：在JavaScript中，当变量在一定作用域内声明，然后在另一个同名变量在一个较低的作用域声明，会发生变量的遮蔽。实例如下：
+   var name = "jeri";
+   var name = "tom";
+   function glbShadow() {
+      var name = "fun";
+      console.log(name); // 输出:fun
+   }
+   glbShadow();
+   console.log(name); // 输出:tom 
+   当在一个变量同一作用域内声明了多次时，最后一次声明会生效，会遮蔽以前的声明。
+   
+   函数遮蔽：
+   var shadowed = 0;
+   function argShadow(shadowed) {
+      var str = ["Value is",shadowed].join(" ");
+      console.log(str);
+   }
+   argShadow(108); // output:Value is 108
+   argShadow(); // output:Value is
+   函数argShadow的参数shadowed覆盖了全局作用域内的同名变量。即使没有传递任何参数，仍然绑定的是shadowed，并没有访问到全局变量shadowed = 0。
+   
+   任何情况下，离得最近的变量绑定优先级最高，如下：
+   var shadowed = 0;
+
+   function varShadow(shadowed) {
+      var shadowed = 123;
+      var str = ["Value is",shadowed].join(" ");
+      console.log(str);
+   }
+  varShadow(108); // output:Value is 123 先访问离得最近的变量绑定
+  varShadow(); // output:Value is 123 
+   
+  遮蔽变量同样发生在闭包内部，如下：
+  function captureShadow(shadowed) {
+    console.log(shadowed); // output:108 
+    return function(shadowed) {
+        console.log(shadowed); // output:2
+        var ret = shadowed + 1;
+        console.log(ret); // output:3
+    }
+}
+var closureShadow = captureShadow(108);
+closureShadow(2);
+在编写JavaScript代码时，因为变量遮蔽会使很多变量绑定超出我们的控制，我们应尽量避免变量遮蔽，一定要注意变量命名。
+
+闭包具有非常强大的功能，函数内部可以引用外部的参数和变量，但其参数和变量不会被垃圾回收机制回，常驻内存，会增大内存使用量，使用不当很容易造成内存泄露。
+但，闭包也是javascript语言的一大特点，主要应用闭包场合为：设计私有的方法和变量。 
+
+
+   
