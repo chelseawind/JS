@@ -1,0 +1,18 @@
+一、什么是Json
+JSON是一种取代XML的数据结构,和xml相比,它更小巧但描述能力却不差,由于它的小巧所以网络传输数据将减少更多流量从而加快速度。
+JSON就是一串字符串 只不过元素会使用特定的符号标注。
+{}：表示对象
+[]:表示数组
+"":表示属性或者值
+:冒号表示后面是前面的值(这个值可以是字符串、数字、也可以是另一个数组或对象）
+{"name":"Andy"}表示包含一个name为Andy的对象
+[{"name":"Andy"},{"name":"Jerry"}]表示包含两个对象的数组
+{"name":["Michael","Jerry"]}来简化上面一步,这是一个拥有一个name数组的对象
+
+二、JSON解析之传统的JSON解析
+1、生成JSON字符串
+public static String createJsonString(String key, Object value) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(key, value);
+        return jsonObject.toString();
+}
